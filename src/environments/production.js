@@ -1,5 +1,5 @@
 import environment from './base'
-import externalConfig from 'externalConfig'
+import externalConfig from './external-config'
 import merge from 'lodash/merge'
 
 const env = environment()
