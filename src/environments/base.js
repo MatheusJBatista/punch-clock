@@ -4,7 +4,7 @@ export default function baseEnv() {
       baseRoute: '/',
     },
     punchClockApi: {
-      baseURL: 'http://localhost:3001',
+      baseURL: process.env.REACT_APP_PUNCH_CLOCK_API_BASE_URL,
       routes: {
         user: {
           get: '/user',
