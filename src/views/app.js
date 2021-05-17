@@ -16,7 +16,7 @@ const App = ({ history }) => {
       <Suspense fallback={() => <h1>carregando</h1>}>
         <Switch>
           <Route exact path={RouteEnum.PunchClock} component={PunchClock} />
-          <Route path={RouteEnum.GoogleAuth} component={GoogleAuthComponent} />
+          <Route exact path={RouteEnum.GoogleAuth} component={GoogleAuthComponent} />
           <Route component={() => <h1 style={{ color: 'white' }}>Página não encontrada</h1>} />
         </Switch>
       </Suspense>

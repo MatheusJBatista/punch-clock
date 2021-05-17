@@ -63,7 +63,7 @@ const GoogleAuthComponent = () => {
   //   dispatch(push(RouteEnum.PunchClock))
   // }, [dispatch])
 
-  return <></>
+  return <p>arvorinha</p>
 }
 
 export default GoogleAuthProvider
