@@ -59,11 +59,11 @@ const GoogleAuthProvider = props => {
 const GoogleAuthComponent = () => {
   const dispatch = useDispatch()
 
-  // useEffect(() => {
-  //   dispatch(push(RouteEnum.PunchClock))
-  // }, [dispatch])
+  useEffect(() => {
+    dispatch(push(RouteEnum.PunchClock))
+  }, [dispatch])
 
-  return <p>arvorinha</p>
+  return <></>
 }
 
 export default GoogleAuthProvider
