@@ -15,7 +15,7 @@ const App = ({ history }) => {
       <Suspense fallback={() => <h1>carregando</h1>}>
         <Switch>
           <Route exact path={RouteEnum.PunchClock} component={PunchClock} />
-          <Route exact path={'/callback'} component={() => null} />
+          <Route exact path={'/callback'} component={() => <p>loading</p>} />
           <Route component={() => <h1>Página não encontrada</h1>} />
         </Switch>
       </Suspense>

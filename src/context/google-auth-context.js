@@ -57,13 +57,13 @@ const GoogleAuthProvider = props => {
 
   if (location.pathname === '/callback') {
     window.location.href = RouteEnum.PunchClock
-    return null
+    return <p>loading</p>
   }
 
   if (isAuthenticated()) return <GoogleAuthContext.Provider {...props} />
   else authenticate()
 
-  return null
+  return <p>loading</p>
 }
 
 export default GoogleAuthProvider
