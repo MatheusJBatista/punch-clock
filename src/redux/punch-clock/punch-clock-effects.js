@@ -8,4 +8,9 @@ const updateTime = async (id, payload) => await punchClockApiInstance.patch(rout
 const getByYearAndMonthTime = async (year, month) =>
   await punchClockApiInstance.get(routes.punchClock.getByYearAndMonth.replace(':year', year).replace(':month', month))
 
-export { updateTime, getByYearAndMonthTime }
+const verifyExists = async (year, month) =>
+  await punchClockApiInstance.get(routes.punchClock.verifyExists.replace(':year', year).replace(':month', month))
+
+const startNewMonth = async (year, month) => await punchClockApiInstance.post(routes.punchClock.startNewMonth, { year, month })
+
+export { updateTime, getByYearAndMonthTime, verifyExists, startNewMonth }

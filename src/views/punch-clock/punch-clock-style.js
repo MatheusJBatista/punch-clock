@@ -14,4 +14,18 @@ const SubTitleLevelThree = styled.h3`
   color: white;
 `
 
-export { Input, Title, SubTitleLevelThree }
+const BlurDiv = styled.div`
+  background-color: #212529;
+  z-index: -1;
+  position: fixed;
+  width: 67.5%;
+  max-height: 400px;
+  filter: blur(5px);
+`
+
+const OverrideBlurDiv = styled.div`
+  width: 67.5%;
+  position: fixed;
+`
+
+export { Input, Title, SubTitleLevelThree, BlurDiv, OverrideBlurDiv }

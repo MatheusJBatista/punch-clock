@@ -1,12 +1,15 @@
 import HttpErrorResponseModel from '../models/http-error-response-model'
+import { toast } from 'react-toastify'
 
 export async function createThunkEffect(dispatch, actionType, effect, ...args) {
   dispatch(createAction(actionType))
 
   const model = await effect(...args)
-  const isError = model instanceof HttpErrorResponseModel
+  if (model.hasInterceptorError) {
+    toast(model.message)
+  }
 
-  dispatch(createAction(`${actionType}_FINISHED`, model, isError))
+  dispatch(createAction(`${actionType}_FINISHED`, model, model.hasInterceptorError))
 
   return model
 }

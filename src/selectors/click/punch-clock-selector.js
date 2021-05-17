@@ -1,6 +1,6 @@
 import { DateTime } from 'luxon'
 
-const getShortTime = time => time?.slice(0, 5)
+const getShortTime = time => time?.slice(0, 8)
 
 const times = state =>
   state.punchClock.times?.map(time => {
@@ -24,4 +24,6 @@ const times = state =>
     }
   })
 
-export { times }
+const currentMonthExists = state => state.punchClock.currentMonthExist
+
+export { times, currentMonthExists }

@@ -4,7 +4,7 @@ import classnames from 'classnames'
 
 import { Button as ButtonStyle, Icon } from './button-style'
 
-const Button = ({ children, loading, onClick, className, ...rest }) => {
+const Button = ({ children, loading, onClick, className, iconButton, ...rest }) => {
   const [isLoading, setIsLoading] = useState(loading)
 
   const handlerOnClick = async () => {
@@ -21,8 +21,8 @@ const Button = ({ children, loading, onClick, className, ...rest }) => {
 
   return (
     <ButtonStyle className={classNames} onClick={handlerOnClick} disabled={isLoading} {...rest}>
-      {children}
-      {isLoading && <Icon className="fa fa-spinner fa-spin" />}
+      {iconButton && isLoading ? <></> : children}
+      {isLoading && <Icon className="fa fa-spinner fa-spin" iconButton />}
     </ButtonStyle>
   )
 }
@@ -32,6 +32,7 @@ Button.propTypes = {
   loading: PropTypes.bool,
   onClick: PropTypes.func,
   className: PropTypes.string,
+  iconButton: PropTypes.bool,
 }
 
 export default Button

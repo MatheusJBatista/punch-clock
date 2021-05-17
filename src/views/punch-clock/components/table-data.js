@@ -7,22 +7,24 @@ import { DateTime } from 'luxon'
 
 import * as PunchClockActions from '@redux/punch-clock/punch-clock-actions'
 import classNames from 'classnames'
+import { useRef } from 'react'
 
-const TableData = ({ time, name, shouldRenderButton, showDayOfButton }) => {
-  const { id, onBlur, dayOff, allowToPunchIn } = time
+const TableData = ({ time, name, shouldRenderButton, showDayOfButton, onBlur, onChange }) => {
+  const input = useRef()
+  const { id, dayOff, allowToPunchIn } = time
   const value = time[name]
   const dispatch = useDispatch()
 
   const handlerOnClick = async () => {
     const dateNow = DateTime.now()
-    console.log(dateNow, dateNow.hour, dateNow.minute)
     const minuteAsString = dateNow.minute <= 9 ? `0${dateNow.minute}` : dateNow.minute
     const hourAsString = dateNow.hour <= 9 ? `0${dateNow.hour}` : dateNow.hour
     const fieldToUpdate = {
       [name]: `${hourAsString}:${minuteAsString}`,
     }
 
-    await dispatch(PunchClockActions.patchTime(id, fieldToUpdate))
+    const { hasInterceptorError } = await dispatch(PunchClockActions.patchTime(id, fieldToUpdate))
+    if (hasInterceptorError) return
     await dispatch(PunchClockActions.getByYearAndMonthTimes(2021, '05'))
   }
 
@@ -31,8 +33,23 @@ const TableData = ({ time, name, shouldRenderButton, showDayOfButton }) => {
       dayOff: true,
     }
 
-    await dispatch(PunchClockActions.patchTime(id, fieldToUpdate))
+    const { hasInterceptorError } = await dispatch(PunchClockActions.patchTime(id, fieldToUpdate))
+    if (hasInterceptorError) return
     await dispatch(PunchClockActions.getByYearAndMonthTimes(2021, '05'))
+  }
+
+  const handlerOnChange = e => {
+    const value = e.target.value
+
+    let maskedValue = value.replace(/\D/g, '')
+    maskedValue = maskedValue.slice(0, 6)
+    maskedValue = maskedValue.replace(/^(\d{2})(\d{1})/g, '$1:$2')
+    maskedValue = maskedValue.replace(/^(.{5})(\d{1})/g, '$1:$2')
+
+    e.target.value = maskedValue
+    input.current.value = maskedValue
+
+    if (onChange) onChange(e)
   }
 
   const punchInButtonClasses = classNames({ [`col-${showDayOfButton ? 8 : 12}`]: true })
@@ -42,7 +59,7 @@ const TableData = ({ time, name, shouldRenderButton, showDayOfButton }) => {
 
   return (
     <td className="align-middle">
-      {value && <Input defaultValue={value} name={name} id={id} onBlur={onBlur} />}
+      {value && <Input type="tel" ref={input} defaultValue={value} name={name} id={id} onBlur={onBlur} onChange={handlerOnChange} />}
       {shouldRenderButton && allowToPunchIn && (
         <div className="row">
           <div className={punchInButtonClasses}>
@@ -65,10 +82,11 @@ const TableData = ({ time, name, shouldRenderButton, showDayOfButton }) => {
 TableData.propTypes = {
   time: {
     id: PropTypes.string,
-    onBlur: PropTypes.func,
     dayOff: PropTypes.bool,
     allowToPunchIn: PropTypes.bool,
   },
+  onBlur: PropTypes.func,
+  onChange: PropTypes.func,
   name: PropTypes.string,
   shouldRenderButton: PropTypes.bool,
   showDayOfButton: PropTypes.bool,
