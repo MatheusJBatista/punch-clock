@@ -6,6 +6,7 @@ import { ConnectedRouter } from 'connected-react-router/immutable'
 import { Route, Switch } from 'react-router-dom'
 
 import RouteEnum from '../constants/RouteEnum'
+import { GoogleAuthComponent } from 'context/google-auth-context'
 
 const PunchClock = lazy(() => import('./punch-clock/punch-clock'))
 
@@ -15,7 +16,7 @@ const App = ({ history }) => {
       <Suspense fallback={() => <h1>carregando</h1>}>
         <Switch>
           <Route exact path={RouteEnum.PunchClock} component={PunchClock} />
-          <Route path={RouteEnum.GoogleAuth} />
+          <Route path={RouteEnum.GoogleAuth} component={GoogleAuthComponent} />
           <Route component={() => <h1 style={{ color: 'white' }}>Página não encontrada</h1>} />
         </Switch>
       </Suspense>

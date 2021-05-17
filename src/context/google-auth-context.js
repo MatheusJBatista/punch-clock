@@ -1,8 +1,10 @@
-import { createContext } from 'react'
+import { createContext, useEffect } from 'react'
 import qs from 'qs'
 import RouteEnum from '@constants/RouteEnum'
 import environment from '@environment/'
 import { getAccessToken, getIdToken, setAccessToken, setIdToken } from '@utilities/storage-utility'
+import { push } from 'connected-react-router'
+import { useDispatch } from 'react-redux'
 
 const GoogleAuthContext = createContext()
 
@@ -51,12 +53,18 @@ const GoogleAuthProvider = props => {
   if (isAuthenticated()) return <GoogleAuthContext.Provider {...props} />
   else authenticate()
 
-  if (location.pathname === RouteEnum.GoogleAuth) {
-    window.location.href = RouteEnum.PunchClock
-  }
-
   return null
 }
 
+const GoogleAuthComponent = () => {
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    dispatch(push(RouteEnum.PunchClock))
+  }, [dispatch])
+
+  return <></>
+}
+
 export default GoogleAuthProvider
-export { authenticate }
+export { authenticate, GoogleAuthComponent }

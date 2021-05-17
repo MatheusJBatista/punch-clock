@@ -18,8 +18,8 @@ punchClockApiInstance.interceptors.response.use(
     return response.data
   },
   error => {
-    if (error.response.status === 401) return authenticate()
-    if (error.response.status === 400)
+    if (error?.response?.status === 401) return authenticate()
+    if (error?.response?.status === 400)
       return {
         hasInterceptorError: true,
         message: error.response.data.message,
