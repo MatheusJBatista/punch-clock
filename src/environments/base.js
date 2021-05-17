@@ -3,8 +3,12 @@ export default function baseEnv() {
     route: {
       baseRoute: '/',
     },
+    googleAuth: {
+      redirectUrl: 'localhost:3000/callback',
+      clientId: '',
+    },
     punchClockApi: {
-      baseURL: process.env.REACT_APP_PUNCH_CLOCK_API_BASE_URL,
+      baseURL: 'localhost:3001',
       routes: {
         user: {
           get: '/user',

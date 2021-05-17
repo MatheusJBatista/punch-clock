@@ -11,6 +11,7 @@ import environment from '@environment'
 
 import App from './views/app'
 import rootStore from './redux/root-store'
+import GoogleAuthProvider from 'context/google-auth-context'
 
 const initialState = Immutable.Map()
 const history = createBrowserHistory({ basename: environment.route.baseRoute })
@@ -19,7 +20,9 @@ const store = rootStore(initialState, history)
 const render = () => {
   ReactDOM.render(
     <Provider store={store}>
-      <App history={history} />
+      <GoogleAuthProvider>
+        <App history={history} />
+      </GoogleAuthProvider>
     </Provider>,
     document.getElementById('root')
   )
