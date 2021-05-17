@@ -14,7 +14,7 @@ const App = ({ history }) => {
     <ConnectedRouter history={history}>
       <Suspense fallback={() => <h1>carregando</h1>}>
         <Switch>
-          <Route exact path={'/callback'} component={() => <p>loading</p>} />
+          <Route path={'/callback'} component={() => <p>loading</p>} />
           <Route exact path={RouteEnum.PunchClock} component={PunchClock} />
           <Route component={() => <h1>Página não encontrada</h1>} />
         </Switch>
