@@ -7,6 +7,7 @@ import { push } from 'connected-react-router'
 import { useDispatch } from 'react-redux'
 
 const GoogleAuthContext = createContext()
+const publicPaths = [RouteEnum.Privacy]
 
 const clientId = environment.googleAuth.clientId
 const redirectUrl = environment.googleAuth.redirectUrl
@@ -23,6 +24,8 @@ const params = {
 }
 
 const isAuthenticated = () => {
+  if (publicPaths.includes(location.path)) return true
+
   const idToken = getIdToken()
   const accessToken = getAccessToken()
 
