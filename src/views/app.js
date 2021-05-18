@@ -9,6 +9,7 @@ import RouteEnum from '../constants/RouteEnum'
 import { GoogleAuthComponent } from 'context/google-auth-context'
 
 const PunchClock = lazy(() => import('./punch-clock/punch-clock'))
+const Privacy = lazy(() => import('./privacy/privacy'))
 
 const App = ({ history }) => {
   return (
@@ -17,6 +18,7 @@ const App = ({ history }) => {
         <Switch>
           <Route exact path={RouteEnum.PunchClock} component={PunchClock} />
           <Route exact path={RouteEnum.GoogleAuth} component={GoogleAuthComponent} />
+          <Route exact path={RouteEnum.Privacy} component={Privacy} />
           <Route component={() => <h1 style={{ color: 'white' }}>Página não encontrada</h1>} />
         </Switch>
       </Suspense>

@@ -5,11 +5,11 @@ export async function createThunkEffect(dispatch, actionType, effect, ...args) {
   dispatch(createAction(actionType))
 
   const model = await effect(...args)
-  if (model.hasInterceptorError) {
+  if (model?.hasInterceptorError) {
     toast(model.message)
   }
 
-  dispatch(createAction(`${actionType}_FINISHED`, model, model.hasInterceptorError))
+  dispatch(createAction(`${actionType}_FINISHED`, model, model?.hasInterceptorError))
 
   return model
 }
