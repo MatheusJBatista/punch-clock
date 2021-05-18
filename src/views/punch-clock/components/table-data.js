@@ -6,10 +6,9 @@ import Button from 'components/button/button'
 import { DateTime } from 'luxon'
 
 import * as PunchClockActions from '@redux/punch-clock/punch-clock-actions'
-import classNames from 'classnames'
 import { useRef } from 'react'
 
-const TableData = ({ time, name, shouldRenderButton, showDayOfButton, onBlur, onChange }) => {
+const TableData = ({ time, name, shouldRenderButton, isEnterTime, onBlur, onChange, buttonName }) => {
   const input = useRef()
   const { id, dayOff, allowToPunchIn } = time
   const value = time[name]
@@ -52,8 +51,6 @@ const TableData = ({ time, name, shouldRenderButton, showDayOfButton, onBlur, on
     if (onChange) onChange(e)
   }
 
-  const punchInButtonClasses = classNames({ [`col-${showDayOfButton ? 8 : 12}`]: true })
-
   if (dayOff) return <td className="align-middle">-----</td>
   if (!allowToPunchIn) return <td className="align-middle">Aguardando chegar no dia</td>
 
@@ -62,11 +59,11 @@ const TableData = ({ time, name, shouldRenderButton, showDayOfButton, onBlur, on
       {value && <Input type="tel" ref={input} defaultValue={value} name={name} id={id} onBlur={onBlur} onChange={handlerOnChange} />}
       {shouldRenderButton && allowToPunchIn && (
         <div className="row">
-          <div className={punchInButtonClasses}>
-            <Button onClick={handlerOnClick}>Marcar horário atual</Button>
+          <div className="col-md-12">
+            <Button onClick={handlerOnClick}>{buttonName ? buttonName : 'Marcar horário atual'}</Button>
           </div>
-          {showDayOfButton && (
-            <div className="col-4">
+          {isEnterTime && (
+            <div className="col-12 mt-1">
               <Button className="btn-secondary" onClick={handlerDayOffClick}>
                 Day Off
               </Button>
@@ -89,7 +86,8 @@ TableData.propTypes = {
   onChange: PropTypes.func,
   name: PropTypes.string,
   shouldRenderButton: PropTypes.bool,
-  showDayOfButton: PropTypes.bool,
+  isEnterTime: PropTypes.bool,
+  buttonName: PropTypes.string,
 }
 
 export default TableData

@@ -22,7 +22,7 @@ const Button = ({ children, loading, onClick, className, iconButton, ...rest }) 
   return (
     <ButtonStyle className={classNames} onClick={handlerOnClick} disabled={isLoading} {...rest}>
       {iconButton && isLoading ? <></> : children}
-      {isLoading && <Icon className="fa fa-spinner fa-spin" iconButton />}
+      {isLoading && <Icon className="fa fa-spinner fa-spin" iconButton={iconButton} />}
     </ButtonStyle>
   )
 }

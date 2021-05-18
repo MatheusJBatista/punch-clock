@@ -14,6 +14,7 @@ export default function baseEnv() {
           get: '/user',
         },
         punchClock: {
+          getById: '/punch-clock/:id',
           getByYearAndMonth: '/punch-clock/year/:year/month/:month',
           patch: '/punch-clock/:id/punch-in',
           verifyExists: '/punch-clock/verify-exists/year/:year/month/:month',

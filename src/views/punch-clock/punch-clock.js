@@ -1,5 +1,5 @@
 import { Input, Title, SubTitleLevelThree, BlurDiv, OverrideBlurDiv } from './punch-clock-style'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { toast } from 'react-toastify'
@@ -12,26 +12,21 @@ import TableData from './components/table-data'
 import NoMonthMockTable from './components/no-month-mock-table'
 import TableLoader from './components/table-loader'
 import { selectRequesting } from '@selectors/requesting/requesting-selector'
+import { timer, useTimer } from '@utilities/timer-utility'
 
 const PunchClock = () => {
   const dispatch = useDispatch()
+  const timer2 = useTimer()
   const timeValidator = /^[0-9]{2}:([0-9]{2}:)?[0-9]{2}$/g
+
+  const [intervals, setIntervals] = useState([])
 
   const times = useSelector(PunchClockSelector.times)
   const currentMonthExists = useSelector(PunchClockSelector.currentMonthExists)
   const hasLoadedTimes = useSelector(state => selectRequesting(state, [PunchClockActions.GET_BY_YEAR_AND_MONTH_TIMES_FINISHED]))
   const hasLoadedCurrentMonthExists = useSelector(state => selectRequesting(state, [PunchClockActions.VERIFY_EXISTS_FINISHED]))
 
-  const handlerOnBlur = async ({
-    target: {
-      value,
-      name,
-      id,
-      _wrapperState: { initialValue },
-    },
-  }) => {
-    console.log('onBlue', value, name, id, initialValue)
-    if (value === initialValue) return
+  const handlerOnBlur = async ({ target: { value, name, id } }) => {
     if (!timeValidator.test(value)) return toast('O horário deve ter o formato: hora:minuto ou hora:minuto:segundos')
 
     const fieldToUpdate = {
@@ -39,18 +34,11 @@ const PunchClock = () => {
     }
 
     await dispatch(PunchClockActions.patchTime(id, fieldToUpdate))
+    await dispatch(PunchClockActions.getById(id))
   }
 
-  const handlerOnChange = async ({
-    target: {
-      value,
-      name,
-      id,
-      _wrapperState: { initialValue },
-    },
-  }) => {
+  const handlerOnChange = async ({ target: { value, name, id } }) => {
     if (value.length !== 5 && value.length !== 8) return
-    if (value === initialValue) return
     if (!timeValidator.test(value)) return toast('O horário deve ter o formato: hora:minuto ou hora:minuto:segundos')
 
     const fieldToUpdate = {
@@ -58,6 +46,7 @@ const PunchClock = () => {
     }
 
     await dispatch(PunchClockActions.patchTime(id, fieldToUpdate))
+    await dispatch(PunchClockActions.getById(id))
   }
 
   useEffect(() => {
@@ -73,11 +62,16 @@ const PunchClock = () => {
     await dispatch(PunchClockActions.verifyExists(2021, '05'))
   }
 
-  const getByYearAndMonthTimes = () => dispatch(PunchClockActions.getByYearAndMonthTimes(2021, '05'))
   const handlerDayOffExtraButton = async id => {
     const { hasInterceptorError } = await dispatch(PunchClockActions.patchTime(id, { dayOff: false }))
     if (hasInterceptorError) return
     await dispatch(PunchClockActions.getByYearAndMonthTimes(2021, '05'))
+  }
+
+  const setTimer = time => {
+    timer2(time, timer => {
+      dispatch(PunchClockActions.setTimer(time.id, timer))
+    })
   }
 
   return (
@@ -87,9 +81,6 @@ const PunchClock = () => {
       </div>
       {currentMonthExists ? (
         <TableLoader isLoading={!hasLoadedTimes}>
-          <Button className="btn-secondary mb-1" onClick={getByYearAndMonthTimes}>
-            Atualizar total de horas
-          </Button>
           <table className="table table-dark">
             <thead>
               <tr>
@@ -123,14 +114,16 @@ const PunchClock = () => {
                     {time.weekday} {time.day}
                   </td>
                   <TableData
+                    buttonName="Iniciar"
                     time={time}
                     shouldRenderButton={time.createEnterTime}
                     name={'enterTime'}
                     onBlur={handlerOnBlur}
                     onChange={handlerOnChange}
-                    showDayOfButton={true}
+                    isEnterTime={true}
                   />
                   <TableData
+                    buttonName="Ir pro almoço"
                     time={time}
                     shouldRenderButton={time.createLeaveToLunchTime}
                     name={'leaveToLunchTime'}
@@ -138,6 +131,7 @@ const PunchClock = () => {
                     onChange={handlerOnChange}
                   />
                   <TableData
+                    buttonName="Voltar do almoço"
                     time={time}
                     shouldRenderButton={time.createBackFromLunchTime}
                     name={'backFromLunchTime'}
@@ -145,13 +139,14 @@ const PunchClock = () => {
                     onChange={handlerOnChange}
                   />
                   <TableData
+                    buttonName="Sair"
                     time={time}
                     shouldRenderButton={time.createExitTime}
                     name={'exitTime'}
                     onBlur={handlerOnBlur}
                     onChange={handlerOnChange}
                   />
-                  <td className="align-middle">{time.totalHour ? time.totalHour : '-----'}</td>
+                  <td className="align-middle">{time.totalHour ? time.totalHour : setTimer(time)}</td>
                   <td className="align-middle">
                     {!time.dayOff ? (
                       <Button className="btn-info" data-tip="Adicionar informações extra" disabled={!time.allowToPunchIn} iconButton>
