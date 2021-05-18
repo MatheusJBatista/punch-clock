@@ -24,7 +24,7 @@ const params = {
 }
 
 const isAuthenticated = () => {
-  if (publicPaths.includes(location.path)) return true
+  if (publicPaths.includes(location.pathname)) return true
 
   const idToken = getIdToken()
   const accessToken = getAccessToken()
