@@ -6,7 +6,7 @@ const mapperTime = time => {
   const parsedDate = new DateTime.fromISO(time.date)
   const dateNow = DateTime.now()
 
-  const allowToPunchIn = parsedDate.ordinal <= dateNow.ordinal
+  const allowToPunchIn = parsedDate <= dateNow
 
   return {
     ...time,

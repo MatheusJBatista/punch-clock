@@ -1,5 +1,5 @@
 import { getTimeByIds } from '@selectors/click/punch-clock-selector'
-import { DateTime } from 'luxon'
+import { DateTime, Info } from 'luxon'
 import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 
@@ -23,6 +23,9 @@ const timer = (enterTime, leaveToLunchTime, backFromLunchTime, exitTime, setTime
     return totalTimeOfLunchSoFar
   }
 
+  const dateNowForValidation = DateTime.now()
+  const startDateForValidation = DateTime.fromISO(enterTime)
+  if (startDateForValidation > dateNowForValidation) return
   return setInterval(() => {
     const dateNow = DateTime.now()
     const startDate = DateTime.fromISO(enterTime)
@@ -95,4 +98,10 @@ const useTimer = () => {
   return thisTimer
 }
 
-export { timer, useTimer }
+const months = Info.months('long', { locale: 'pt-br' }).map((month, index) => {
+  const numberMonth = index + 1
+  const id = numberMonth <= 9 ? `0${numberMonth}` : numberMonth
+  return { text: month, id, position: index + 1 }
+})
+
+export { timer, useTimer, months }

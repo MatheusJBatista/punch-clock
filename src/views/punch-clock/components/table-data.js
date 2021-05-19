@@ -24,7 +24,7 @@ const TableData = ({ time, name, shouldRenderButton, isEnterTime, onBlur, onChan
 
     const { hasInterceptorError } = await dispatch(PunchClockActions.patchTime(id, fieldToUpdate))
     if (hasInterceptorError) return
-    await dispatch(PunchClockActions.getByYearAndMonthTimes(2021, '05'))
+    await dispatch(PunchClockActions.getById(id))
   }
 
   const handlerDayOffClick = async () => {
@@ -34,7 +34,7 @@ const TableData = ({ time, name, shouldRenderButton, isEnterTime, onBlur, onChan
 
     const { hasInterceptorError } = await dispatch(PunchClockActions.patchTime(id, fieldToUpdate))
     if (hasInterceptorError) return
-    await dispatch(PunchClockActions.getByYearAndMonthTimes(2021, '05'))
+    await dispatch(PunchClockActions.getById(id))
   }
 
   const handlerOnChange = e => {

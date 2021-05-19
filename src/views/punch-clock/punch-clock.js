@@ -12,19 +12,24 @@ import TableData from './components/table-data'
 import NoMonthMockTable from './components/no-month-mock-table'
 import TableLoader from './components/table-loader'
 import { selectRequesting } from '@selectors/requesting/requesting-selector'
-import { timer, useTimer } from '@utilities/timer-utility'
+import { months, useTimer } from '@utilities/timer-utility'
+import PunchClockPagination from './components/pagination/punch-clock-pagination'
 
 const PunchClock = () => {
   const dispatch = useDispatch()
-  const timer2 = useTimer()
+  const timer = useTimer()
   const timeValidator = /^[0-9]{2}:([0-9]{2}:)?[0-9]{2}$/g
 
-  const [intervals, setIntervals] = useState([])
+  const [currentDate, setCurrentDate] = useState({ year: '', month: '' })
 
   const times = useSelector(PunchClockSelector.times)
   const currentMonthExists = useSelector(PunchClockSelector.currentMonthExists)
   const hasLoadedTimes = useSelector(state => selectRequesting(state, [PunchClockActions.GET_BY_YEAR_AND_MONTH_TIMES_FINISHED]))
   const hasLoadedCurrentMonthExists = useSelector(state => selectRequesting(state, [PunchClockActions.VERIFY_EXISTS_FINISHED]))
+
+  const handlerDateChange = ({ year, month }) => {
+    dispatch(PunchClockActions.verifyExists(year, month))
+  }
 
   const handlerOnBlur = async ({ target: { value, name, id } }) => {
     if (!timeValidator.test(value)) return toast('O horário deve ter o formato: hora:minuto ou hora:minuto:segundos')
@@ -50,35 +55,35 @@ const PunchClock = () => {
   }
 
   useEffect(() => {
-    dispatch(PunchClockActions.verifyExists(2021, '05'))
-  }, [dispatch])
+    if (currentDate.year && currentDate.month) dispatch(PunchClockActions.verifyExists(currentDate.year, currentDate.month))
+  }, [currentDate, dispatch])
 
   useEffect(() => {
-    if (currentMonthExists && hasLoadedCurrentMonthExists) dispatch(PunchClockActions.getByYearAndMonthTimes(2021, '05'))
-  }, [currentMonthExists, dispatch, hasLoadedCurrentMonthExists])
+    if (currentMonthExists && hasLoadedCurrentMonthExists) dispatch(PunchClockActions.getByYearAndMonthTimes(currentDate.year, currentDate.month))
+  }, [currentDate, currentMonthExists, dispatch, hasLoadedCurrentMonthExists])
 
   const startNewMonth = async () => {
-    await dispatch(PunchClockActions.startNewMonth(2021, '05'))
-    await dispatch(PunchClockActions.verifyExists(2021, '05'))
+    await dispatch(PunchClockActions.startNewMonth(currentDate.year, currentDate.month))
+    await dispatch(PunchClockActions.verifyExists(currentDate.year, currentDate.month))
   }
 
   const handlerDayOffExtraButton = async id => {
     const { hasInterceptorError } = await dispatch(PunchClockActions.patchTime(id, { dayOff: false }))
     if (hasInterceptorError) return
-    await dispatch(PunchClockActions.getByYearAndMonthTimes(2021, '05'))
+    await dispatch(PunchClockActions.getById(id))
   }
 
   const setTimer = time => {
-    timer2(time, timer => {
+    timer(time, timer => {
       dispatch(PunchClockActions.setTimer(time.id, timer))
     })
   }
 
+  const newMonthText = months.find(month => month.id === currentDate.month)?.text
+
   return (
     <div className="container">
-      <div>
-        <Title data-tip="hello world">Maio</Title>
-      </div>
+      <PunchClockPagination onDateChange={setCurrentDate} />
       {currentMonthExists ? (
         <TableLoader isLoading={!hasLoadedTimes}>
           <table className="table table-dark">
@@ -181,7 +186,7 @@ const PunchClock = () => {
           </BlurDiv>
           <OverrideBlurDiv className="d-flex justify-content-center">
             <Button className="btn-info btn-lg" style={{ margin: '200px 0' }} onClick={startNewMonth}>
-              Iniciar mês de Maio
+              Iniciar mês de {newMonthText} de {currentDate.year}
             </Button>
           </OverrideBlurDiv>
         </>

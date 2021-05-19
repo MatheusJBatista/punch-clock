@@ -5,7 +5,7 @@ export default function baseEnv() {
     },
     googleAuth: {
       redirectUrl: 'http://localhost:3000/google/callback',
-      clientId: '',
+      clientId: '926029366570-bhhpq1obmj9l98f36okbdj8bvtt6j1oq.apps.googleusercontent.com',
     },
     punchClockApi: {
       baseURL: 'http://localhost:3001',
